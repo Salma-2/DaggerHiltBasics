@@ -38,3 +38,19 @@ kapt {
 }
 
 ```
+
+## Application Class
+Create application class that's annotated with `@HiltAndroidApp` that serves as the application-level dependency container
+
+```kotlin
+@HiltAndroidApp
+class MyApplication : Application()
+```
+register application at manifest
+```xml
+<application 
+  ...
+  android:name=".MyApplication"
+  ...
+</application>
+```
