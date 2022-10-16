@@ -54,3 +54,86 @@ register application at manifest
   ...
 </application>
 ```
+
+## Inject dependencies into Android classes
+Hilt can provide dependencies to other Android classes that have the `@AndroidEntryPoint`
+*Hilt supports (Application `@HiltAndroidApp`, ViewModel `@HiltViewModel`, Activity, Fragment, View, Service, BroadcastReceiver*
+
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+...
+}
+```
+
+## Hilt Bindings
+### Constructor Injection
+```kotlin
+@HiltViewModel
+class MyViewModel @Inject constructor(private val repository: Lazy<MyRepository>) : ViewModel() {
+}
+```
+### Field Injection
+```kotlin
+
+@Inject
+lateinit var repositoryImpl: MyRepositoryImpl
+
+```
+
+
+## Hilt Modules
+A Hilt module is a class that is annotated with `@Module`.
+you must annotate Hilt modules with `@InstallIn` to tell Hilt which Android class each module will be used or installed in.
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+  ...
+}
+```
+
+### Inject interface instances with @Binds
+*a class that has an `@Inject constructor`, doesn't need `@Provides()`*
+```kotlin
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindMyRepository(
+        myRepositoryImpl: MyRepositoryImpl
+    ): MyRepository
+}
+
+class MyRepositoryImpl @Inject constructor(
+    private val api: MyApi,
+    private val appContext: Application,
+) : MyRepository {}
+```
+
+
+### Inject instances with @Provides
+*you cannot construcor inject an interface or a class from external library (eg. retrofit, room, etc.)*
+
+```kotlin
+object AppModule {
+ 
+ ...
+ 
+ @Provides
+ @Singleton
+ fun provideMyApi(): MyApi {
+     return Retrofit.Builder()
+            .baseUrl("https://test.com")
+            .build()
+            .create(MyApi::class.java)
+  }
+  
+  ...
+}
+  
+class MyRepositoryImpl(private val api: MyApi) : MyRepository {}
+```
+
