@@ -1,4 +1,12 @@
-## Adding dependencies
+
+* [Adding Dependencies](#adding-dependencies)
+* [Application Class](#application-class)
+* [Hilt Bindings](#hilt-bindings)
+* [Hilt Modules](#hilt-modules)
+
+
+
+## Adding Dependencies
 
 add the `hilt-android-gradle-plugin` plugin to project's root `build.gradle` file
 
@@ -80,7 +88,6 @@ class MyViewModel @Inject constructor(private val repository: Lazy<MyRepository>
 lateinit var repositoryImpl: MyRepositoryImpl
 
 ```
-
 
 ## Hilt Modules
 A Hilt module is a class that is annotated with `@Module`.
